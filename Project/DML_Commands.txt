@@ -1,0 +1,366 @@
+1. DML Commands
+
+
+Insert Stetement:
+
+insert into parent values (1, 'John', 'Dos', 12345678901234);
+insert into parent values (2, 'Jane', 'Smith', 98765432109876);
+
+
+   ID FNAME      LNAME      PHONENUMBER
+----- ---------- ---------- -----------
+    1 John       Dos         1.2346E+13
+    2 Jane       Smith       9.8765E+13
+
+
+insert into manager values (1, 'Jacob', 'Miller', '20-Jan-2015'); //To enroll Students
+insert into manager values (2, 'David', 'Johnson', '10-Mar-2017'); //To hire Teachers
+insert into manager values (3, 'Lana', 'Anderson', '16-Dec-2016'); //To add Subjects 
+
+
+   ID FNAME      LNAME      HIRINGDATE
+----- ---------- ---------- ----------
+    1 Jacob      Miller     20-JAN-15
+    2 David      Johnson    10-MAR-17
+    3 Lana       Anderson   16-DEC-16
+
+
+insert into student values (1, 'James', 'Smith', 'NewYork', '6th Grade', '23-Jun-2013', 2, 1);
+insert into student values (2, 'Jessica', 'Dos', 'Los Angelos', '7th Grade', '18=Aug-2014', 1, 1);
+insert into student values (3, 'Michael', 'Smith', 'NewYork', '9th Grade', '19-Jan-2010', 2, 1);
+update student set birthdate = '18-Aug-2012' where id = 2;
+
+
+       ID FNAME      LNAME      LOCATION       GRADE      BIRTHDATE  PARENTID  MANAGERID
+--------- ---------- ---------- ------------- ---------- ---------  --------- ----------
+        1 James      Smith      NewYork        6th Grade  23-JUN-13    2          1
+
+        2 Jessica    Dos        Los Angelos    7th Grade  18-AUG-12    1          1
+
+        3 Michael    Smith      NewYork        9th Grade  19-JAN-10    2          1
+
+
+insert into teacher values (1, 'Thomas', 'Wilson', '13-Nov-2019', 'Chemistry', 2);
+insert into teacher values (2, 'Charles', 'Brown', '18-Feb-2020', 'Math', 2);
+insert into teacher values (3, 'Daniel', 'Taylor', '23-Dec-2020', 'Science', 2);
+insert into teacher values (4, 'Jennifer', 'Williams', '19-Aug-2021', 'Art', 2);
+
+
+   ID FNAME      LNAME      HIRINGDAT SUBJECTSTAUGHT        MANAGERID
+----- ---------- ---------- --------- -------------------- ----------
+    1 Thomas     Wilson     13-NOV-19 Chemistry                     2
+    2 Charles    Brown      18-FEB-20 Math                          2
+    3 Daniel     Taylor     23-DEC-20 Science                       2
+    4 Jennifer   Williams   19-AUG-21 Art                           2
+
+
+insert into class values (201, 1, '9AM');
+insert into class values (202, 2, '8AM');
+insert into class values (203, 1, '11AM');
+insert into class values (204, 1.5, '12PM');
+
+
+    ID     PERIOD TIME
+------ ---------- -----
+   201        1   9AM
+   202        2   8AM
+   203        1   11AM
+   204       1.5  12PM
+
+
+insert into subject values (301, 'Chemistry', 201, 1, 3);
+insert into subject values (302, 'Math', 202, 2, 3);
+insert into subject values (303, 'Science', 203, 3, 3);
+insert into subject values (304, 'Art', 204, 4, 3);
+
+
+   ID NAME          CLASSID  TEACHERID  MANAGERID
+----- ---------- ---------- ---------- ----------
+  301 Chemistry         201          1          3
+  302 Math              202          2          3
+  303 Science           203          3          3
+  304 Art               204          4          3
+
+
+insert into assigned_to values (201, 1);
+insert into assigned_to values (202, 2);
+insert into assigned_to values (203, 3);
+insert into assigned_to values (204, 4);
+
+
+   CLASSID  TEACHERID
+---------- ----------
+       201          1
+       202          2
+       203          3
+       204          4
+
+insert into takes values (1, 203);
+insert into takes values (1, 204);
+insert into takes values (2, 201);
+insert into takes values (2, 203);
+insert into takes values (3, 204);
+insert into takes values (3, 201);
+insert into takes values (3, 202);
+insert into takes values (1, 202);
+
+
+ STUDENTID    CLASSID
+---------- ----------
+         1        202
+         1        204
+         1        203
+         2        201
+         2        203
+         3        201
+         3        202
+         3        204
+
+
+insert into manager_degrees values (1, 'MBA');
+insert into manager_degrees values (2, 'Ph.D.');
+insert into manager_degrees values (3, 'Master');
+insert into manager_degrees values (2, 'Master');
+
+ MANAGERID DEGREE
+---------- ------------
+         1 MBA
+         2 Master
+         2 Ph.D.
+         3 Master
+
+
+
+Update Statement:
+
+update teacher set FName = 'Tommy' where id = 1;
+update student set grade = '5th grade', birthdate = '23-Jun-2014' where id = 1;
+update manager set hiringdate = '23-Jan-2015' where id = 1;
+
+
+Query Statement:
+
+//Retrieve all students with their parents' information.
+
+select s.ID AS StudentID, s.FName AS StudentFirstName, s.LName AS StudentLastName, 
+p.ID AS ParentID, p.FName AS ParentFirstName, p.LName AS ParentLastName FROM Student s JOIN Parent p ON s.ParentID = p.ID;
+
+ STUDENTID STUDENTFIR STUDENTLAS   PARENTID PARENTFIRS PARENTLAST
+---------- ---------- ---------- ---------- ---------- ----------
+         1 James      Smith               2 Jane       Smith
+         2 Jessica    Dos                 1 John       Dos
+         3 Michael    Smith               2 Jane       Smith
+
+
+//Retrieve all classes assigned to a teacher
+
+select t.ID AS TeacherID, t.FName, t.LName, c.ID AS ClassID, c.Period, c.time
+from Teacher t
+JOIN Assigned_To a ON t.ID = a.TeacherID
+JOIN Class c ON a.ClassID = c.ID;
+
+ TEACHERID FNAME      LNAME         CLASSID     PERIOD TIME
+---------- ---------- ---------- ---------- ---------- -----
+         1 Tommy      Wilson            201          1 9AM
+         2 Charles    Brown             202          2 8AM
+         3 Daniel     Taylor            203          1 11AM
+         4 Jennifer   Williams          204        1.5 12PM
+
+
+//Retrieve all subjects taught in a class
+
+select c.ID AS ClassID, c.time, s.name AS SubjectName, t.FName AS TeacherFirstName, t.LName AS TeacherLastName
+from Class c
+JOIN Subject s ON c.ID = s.ClassID
+JOIN Teacher t ON s.TeacherID = t.ID;
+
+  CLASSID TIME  SUBJECTNAM TEACHERFIR TEACHERLAS
+--------- ----- ---------- ---------- ----------
+      201 9AM   Chemistry  Tommy      Wilson
+      202 8AM   Math       Charles    Brown
+      203 11AM  Science    Daniel     Taylor
+      204 12PM  Art        Jennifer   Williams
+
+
+
+Referntial integrity: 
+
+- Student_FK1 and Student_FK2 in the Student table.
+- Takes_FK1 and Takes_FK2 in the Takes table.
+- AssignedTo_FK1 and AssignedTo_FK2 in the Assigned_To table.
+- Teacher_FK in the Teacher table.
+- Sub_FK1, Sub_FK2, and Sub_FK3 in the Subject table.
+- Degree_FK in the Manager_Degrees table.
+
+
+Predicates:
+
+select * from student where id > 2;
+
+        ID FNAME      LNAME      LOCATION             GRADE      BIRTHDATE   PARENTID  MANAGERID
+---------- ---------- ---------- -------------------- ---------- --------- ---------- ----------
+         3 Michael    Smith      NewYork              9th Grade  19-JAN-10          2          1
+
+
+select * from student where birthdate > '01-Jan-2010';
+
+        ID FNAME      LNAME      LOCATION             GRADE      BIRTHDATE   PARENTID  MANAGERID
+---------- ---------- ---------- -------------------- ---------- --------- ---------- ----------
+         1 James      Smith      NewYork              5th grade  23-JUN-14          2          1
+         2 Jessica    Dos        Los Angelos          7th Grade  18-AUG-12          1          1
+         3 Michael    Smith      NewYork              9th Grade  19-JAN-10          2          1
+
+
+select * from student where location in ('NewYork');
+
+        ID FNAME      LNAME      LOCATION             GRADE      BIRTHDATE   PARENTID  MANAGERID
+---------- ---------- ---------- -------------------- ---------- --------- ---------- ----------
+         1 James      Smith      NewYork              5th grade  23-JUN-14          2          1
+         3 Michael    Smith      NewYork              9th Grade  19-JAN-10          2          1
+
+
+select * from teacher where LName like '%a%';
+
+        ID FNAME      LNAME      HIRINGDAT SUBJECTSTAUGHT        MANAGERID
+---------- ---------- ---------- --------- -------------------- ----------
+         3 Daniel     Taylor     23-DEC-20 Science                       2
+         4 Jennifer   Williams   19-AUG-21 Art                           2
+
+
+select * from class where period between 1.5 and 3;
+
+        ID     PERIOD TIME
+---------- ---------- -----
+       202          2 8AM
+       204        1.5 12PM
+
+
+select * from student order by birthdate desc;
+
+        ID FNAME      LNAME      LOCATION             GRADE      BIRTHDATE   PARENTID  MANAGERID
+---------- ---------- ---------- -------------------- ---------- --------- ---------- ----------
+         1 James      Smith      NewYork              5th grade  23-JUN-14          2          1
+         2 Jessica    Dos        Los Angelos          7th Grade  18-AUG-12          1          1
+         3 Michael    Smith      NewYork              9th Grade  19-JAN-10          2          1
+
+
+select location, count(*) from student group by location;
+
+LOCATION               COUNT(*)
+-------------------- ----------
+NewYork                       2
+Los Angelos                   1
+
+
+
+2. Subquery :
+
+//Retrieve all parents who have students with a grade of '5th grade'.
+
+select * from Parent where ID IN (select ParentID from Student where grade = '5th grade');
+
+   ID FNAME      LNAME      PHONENUMBER
+----- ---------- ---------- -----------
+    2 Jane       Smith       9.8765E+13
+
+
+//Retrieve the number of students for each parent.
+
+select ID AS ParentID, FName, LName, (select Count(*) from Student where ParentID = Parent.ID) AS NumStudents from Parent;
+
+  PARENTID FNAME      LNAME      NUMSTUDENTS
+---------- ---------- ---------- -----------
+         1 John       Dos                  1
+         2 Jane       Smith                2
+
+//Retrieve all students who have a parent in the Parent table.
+
+select * from Student where exists (select * from Parent where ID = Student.ParentID);
+
+   ID FNAME      LNAME      LOCATION             GRADE      BIRTHDATE   PARENTID  MANAGERID
+----- ---------- ---------- -------------------- ---------- --------- ---------- ----------
+    1 James      Smith      NewYork              5th grade  23-JUN-14          2          1
+    2 Jessica    Dos        Los Angelos          7th Grade  18-AUG-12          1          1
+    3 Michael    Smith      NewYork              9th Grade  19-JAN-10          2          1
+
+//Retrieve managers who have at least one teacher.
+
+select * from Manager m where exists (select * FROM teacher where ManagerID = m.ID);
+
+      ID FNAME      LNAME      HIRINGDATE
+-------- ---------- ---------- ----------
+       2 David      Johnson    10-MAR-17
+
+
+//Retrieve classes that have students assigned to them.
+
+select * from Class where ID in (select distinct ClassID from Takes);
+
+    ID     PERIOD TIME
+------ ---------- -----
+   201          1 9AM
+   202          2 8AM
+   203          1 11AM
+   204        1.5 12PM
+
+
+
+3. Views:
+
+
+//View for Student Information with Parent Details.
+
+create view studentinfo as select s.id as studentid, s.fname as studentfirstname, s.lname as studentlastname,
+     s.location, s.grade, s.birthdate,
+     p.id as parentid, p.fname as parentfirstname, p.lname as parentlastname
+     from student s join parent p on s.parentid = p.id;
+
+ STUDENTID STUDENTFIR STUDENTLAS LOCATION             GRADE      BIRTHDATE   PARENTID PARENTFIRS PARENTLAST
+---------- ---------- ---------- -------------------- ---------- --------- ---------- ---------- ----------
+         1 James      Smith      NewYork              5th grade  23-JUN-14          2 Jane       Smith
+         2 Jessica    Dos        Los Angelos          7th Grade  18-AUG-12          1 John       Dos
+         3 Michael    Smith      NewYork              9th Grade  19-JAN-10          2 Jane       Smith
+
+
+//View for Class and Assigned Teacher Information.
+
+create view classinfo as
+select c.id as classid, c.period, c.time,
+       t.id as teacherid, t.fname as teacherfirstname, t.lname as teacherlastname from class c
+       join assigned_to a on c.id = a.classid
+       join teacher t on a.teacherid = t.id;
+
+   CLASSID     PERIOD TIME   TEACHERID TEACHERFIR TEACHERLAS
+---------- ---------- ----- ---------- ---------- ----------
+       201          1 9AM            1 Tommy      Wilson
+       202          2 8AM            2 Charles    Brown
+       203          1 11AM           3 Daniel     Taylor
+       204        1.5 12PM           4 Jennifer   Williams
+
+
+//View for Subject Information.
+
+create view subjectinfo as
+select s.id as subjectid, s.name as subjectname, c.id as classid, c.period, c.time, t.id as teacherid, t.fname as teacherfirstname, t.lname as teacherlastname, m.id as managerid, m.fname as managerfirstname, m.lname as managerlastname
+from subject s join class c on s.classid = c.id join teacher t on s.teacherid = t.id join manager m on s.managerid = m.id;
+
+
+ SUBJECTID SUBJECTNAM    CLASSID     PERIOD TIME   TEACHERID TEACHERFIR TEACHERLAS  MANAGERID MANAGERFIR MANAGERLAS
+---------- ---------- ---------- ---------- ----- ---------- ---------- ---------- ---------- ---------- ----------
+       301 Chemistry         201          1 9AM            1 Tommy      Wilson              3 Lana       Anderson
+       302 Math              202          2 8AM            2 Charles    Brown               3 Lana       Anderson
+       303 Science           203          1 11AM           3 Daniel     Taylor              3 Lana       Anderson
+       304 Art               204        1.5 12PM           4 Jennifer   Williams            3 Lana       Anderson
+
+
+//View for Managers with Degrees.
+
+create view managerdegrees as
+select m.id as managerid, m.fname as managerfirstname, m.lname as managerlastname, md.degree from manager m join manager_degrees md on m.id = md.managerid; 
+
+ MANAGERID MANAGERFIR MANAGERLAS DEGREE
+---------- ---------- ---------- -----------------
+         1 Jacob      Miller     MBA
+         2 David      Johnson    Ph.D.
+         3 Lana       Anderson   Master
+         1 Jacob      Miller     Master

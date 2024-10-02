@@ -1,0 +1,170 @@
+SQL> create table Parent
+  2  (
+  3  ID number,
+  4  FName varchar2(10),
+  5  LName varchar2(10),
+  6  phoneNumber number(14)
+  7  );
+
+Table created.
+
+SQL> create table student
+  2  (
+  3  ID number,
+  4   FName varchar2(10),
+  5   LName varchar2(10),
+  6  location varchar2(20),
+  7  grade varchar2(10),
+  8  birthDate date
+  9  );
+
+Table created.
+
+SQL> create table Class
+  2  (
+  3  ID number,
+  4  Period number,
+  5  time varchar2(5)
+  6  );
+
+Table created.
+
+SQL> create table Teacher
+  2  (
+  3  ID number,
+  4  FName varchar2(10),
+  5  LName varchar2(10),
+  6  subectsTaught varchar2(30),
+  7  hiringDate date
+  8  );
+
+Table created.
+
+SQL> create table Manager
+  2  (
+  3  ID number,
+  4  FName varchar2(10),
+  5  LName varchar2(10),
+  6  hiringDate date
+  7  );
+
+Table created.
+
+SQL> create table Subject
+  2  (
+  3  ID number,
+  4  name varchar2(10)
+  5  );
+
+Table created.
+
+SQL> alter table Parent
+  2  add (constraint Parent_PK primary key (ID) , 
+  3  constraint Parent_SecKey unique (phoneNumber));
+
+Table altered.
+
+SQL> alter table parent
+  2  modify (FName varchar2(10) not null);
+
+Table altered.
+
+
+SQL> alter table student
+  2  add (constraint Student_PK primary key(ID));
+
+Table altered.
+
+SQL> alter table student
+  2  modify (FName varchar2(10) not null, LName varchar2(10) not null, grade varchar2(10) not null);
+
+Table altered.
+
+SQL>  alter table class
+  2   add constraint Class_PK primary key (ID);
+
+Table altered.
+
+SQL> alter table class
+  2  modify (Period number not null, time varchar2(5) not null);
+
+Table altered.
+
+SQL> alter table Teacher
+  2  add constraint Teacher_PK primary key(ID);
+
+Table altered.
+
+SQL> alter table teacher
+  2  modify (FName varchar2(10) not null, LName varchar2(10) not null, subjectsTaught varchar2(20) not null, hiringDate date not null);
+
+Table altered.
+
+SQL> alter table Manager
+  2  add constraint Manager_PK primary key(ID);
+
+Table altered.
+
+SQL> alter table Manager
+  2   modify (FName varchar2(10) not null, LName varchar2(10) not null,  hiringDate date not null);
+
+Table altered.
+
+SQL> alter table subject
+  2  add constraint Subject_PK primary key(ID);
+
+Table altered.
+
+SQL> alter table subject
+  2  modify (name varchar2(10) not null);
+
+Table altered.
+
+SQL> alter table student
+  2  add (ParentID number, ManagerID number,
+  3  constraint Student_FK1 foreign key(ParentID) references parent(ID),
+  4  constraint Student_FK2 foreign key(ManagerID) references manager(ID));
+
+Table altered.
+
+SQL> create table Takes
+  2  (
+  3  StudentID number,
+  4  ClassID number,
+  5  constraint Takes_FK1 foreign key(StudentID) references student(ID),
+  6  constraint Takers_FK2 foreign key(ClassID) references class(ID)
+  7  );
+
+Table created.
+
+SQL> create table Assigned_To
+  2  (
+  3  ClassID number,
+  4  TeacherID number,
+  5  constraint AssignedTo_FK1 foreign key(ClassID) references class(ID),
+  6  constraint AssignedTo_FK2 foreign key(TeacherID) references Teacher(ID)
+  7  );
+
+Table created.
+
+SQL> alter table Teacher
+  2  add (ManagerID number, constraint Teacher_FK foreign key(ManagerID) references Manager(ID));
+
+Table altered.
+
+SQL> create table Manager_Degrees
+  2  (
+  3  ManagerID number,
+  4  degree varchar2(30),
+  5  constraint Degree_FK foreign key(ManagerID) references Manager(ID)
+  6  );
+
+Table created.
+
+SQL> alter table Subject
+  2  add (ClassID number, TeacherID number, ManagerID number, 
+  3  constraint Sub_FK1 foreign key(ClassID) references Class(ID),
+  4  constraint Sub_FK2 foreign key(TeacherID) references Teacher(ID),
+  5  constraint Sub_FK3 foreign key(ManagerID) references Manager(ID));
+
+Table altered.
